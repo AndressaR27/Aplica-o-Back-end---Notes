@@ -5,7 +5,7 @@ class NotesController {
         const { title, description, tags, links } = request.body;
         const user_id = request.user.id
 
-        const note_id = await knex("notes").insert({
+        const [note_id] = await knex("notes").insert({
             title, 
             description,
             user_id
@@ -75,6 +75,7 @@ class NotesController {
             .whereLike("notes.title", `%${title}%`)
             .whereIn("name", FilterTags)
             .innerJoin("notes", "notes.id", "tags.note_id") //pram1 = tabela que eu quero conectar, param2 = quais campos vou usar para conectar
+            .groupBy("notes.id")
             .orderBy("title")           
         }
         else{
